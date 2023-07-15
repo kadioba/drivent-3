@@ -3,16 +3,9 @@ import httpStatus from 'http-status';
 import faker from '@faker-js/faker';
 import * as jwt from 'jsonwebtoken';
 import { cleanDb, generateValidToken } from '../helpers';
-import {
-  createCustomTicketType,
-  createEnrollmentWithAddress,
-  createRemoteTicketType,
-  createTicket,
-  createTicketType,
-  createUser,
-} from '../factories';
-import app, { init } from '@/app';
+import { createCustomTicketType, createEnrollmentWithAddress, createTicket, createUser } from '../factories';
 import { createHotel } from '../factories/hotels-factory';
+import app, { init } from '@/app';
 
 beforeAll(async () => {
   await init();
@@ -75,7 +68,7 @@ describe('GET /hotels', () => {
         await createTicket(enrollment.id, ticketType.id, 'RESERVED');
 
         const response = await server.get('/hotels').set('Authorization', `Bearer ${token}`);
-        expect(response).toBe(httpStatus.NOT_FOUND);
+        expect(response).toBe(httpStatus.PAYMENT_REQUIRED);
       });
       it('should respond with status 402 when ticket type is remote', async () => {
         const user = await createUser();
@@ -85,7 +78,7 @@ describe('GET /hotels', () => {
         await createTicket(enrollment.id, ticketType.id, 'PAID');
 
         const response = await server.get('/hotels').set('Authorization', `Bearer ${token}`);
-        expect(response).toBe(httpStatus.NOT_FOUND);
+        expect(response).toBe(httpStatus.PAYMENT_REQUIRED);
       });
       it('should respond with status 402 when ticket doesn`t include hotel', async () => {
         const user = await createUser();
@@ -95,7 +88,7 @@ describe('GET /hotels', () => {
         await createTicket(enrollment.id, ticketType.id, 'PAID');
 
         const response = await server.get('/hotels').set('Authorization', `Bearer ${token}`);
-        expect(response).toBe(httpStatus.NOT_FOUND);
+        expect(response).toBe(httpStatus.PAYMENT_REQUIRED);
       });
       it('should respond with status 200 and with hotels data', async () => {
         const hotel = await createHotel();
@@ -121,4 +114,6 @@ describe('GET /hotels', () => {
   });
 });
 
-//describe('GET /hotels/hotelId');
+describe('GET /hotels/hotelId', () => {
+    
+});
