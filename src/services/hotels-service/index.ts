@@ -1,6 +1,7 @@
 import { notFoundError } from '@/errors';
 import { paymentRequiredError } from '@/errors/payment-required-error';
 import enrollmentRepository from '@/repositories/enrollment-repository';
+import hotelsRepository from '@/repositories/hotels-repository';
 import ticketsRepository from '@/repositories/tickets-repository';
 
 async function getHotels(userId: number) {
