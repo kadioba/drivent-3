@@ -164,7 +164,7 @@ describe('GET /hotels/hotelId', () => {
       const enrollment = await createEnrollmentWithAddress(user);
       const ticketType = await createCustomTicketType(false, true);
       await createTicket(enrollment.id, ticketType.id, 'PAID');
-      await cleanHotelsAndRoomsFromDb();
+      await deleteHotel(hotel.id);
 
       const response = await server.get(`/hotels/${hotel.id}`).set('Authorization', `Bearer ${token}`);
       expect(response.status).toBe(httpStatus.NOT_FOUND);

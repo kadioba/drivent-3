@@ -30,8 +30,7 @@ async function getHotelDataWithRooms(userId: number, hotelId: number) {
   if (ticket.TicketType.includesHotel === false) throw paymentRequiredError();
 
   const hotelDataWithRooms = await hotelsRepository.getHotelDataWithRooms(hotelId);
-  console.log(hotelDataWithRooms)
-  if (hotelDataWithRooms === null) return notFoundError();
+  if (hotelDataWithRooms === null) throw notFoundError();
   return hotelDataWithRooms;
 }
 

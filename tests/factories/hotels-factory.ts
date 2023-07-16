@@ -20,10 +20,15 @@ export async function createHotelRoom(hotelId: number) {
   });
 }
 
-export async function deleteHotel(hotelId: number) {
-  return prisma.hotel.delete({
+export async function deleteHotel(id: number) {
+  await prisma.room.deleteMany({
     where: {
-      id: hotelId,
+      hotelId: id,
+    },
+  });
+  await prisma.hotel.delete({
+    where: {
+      id,
     },
   });
 }
