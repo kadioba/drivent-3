@@ -2,7 +2,7 @@ import supertest from 'supertest';
 import httpStatus from 'http-status';
 import faker from '@faker-js/faker';
 import * as jwt from 'jsonwebtoken';
-import { cleanDb, generateValidToken } from '../helpers';
+import { cleanDb, cleanHotelsAndRoomsFromDb, generateValidToken } from '../helpers';
 import { createCustomTicketType, createEnrollmentWithAddress, createTicket, createUser } from '../factories';
 import { createHotel, createHotelRoom, deleteHotel } from '../factories/hotels-factory';
 import app, { init } from '@/app';
@@ -55,7 +55,9 @@ describe('GET /hotels', () => {
     it('should respond with status 404 when there is no hotel', async () => {
       const user = await createUser();
       const token = await generateValidToken(user);
-      await createEnrollmentWithAddress(user);
+      const enrollment = await createEnrollmentWithAddress(user);
+      const ticketType = await createCustomTicketType(false, true);
+      await createTicket(enrollment.id, ticketType.id, 'PAID');
 
       const response = await server.get('/hotels').set('Authorization', `Bearer ${token}`);
       expect(response.status).toBe(httpStatus.NOT_FOUND);
@@ -157,10 +159,12 @@ describe('GET /hotels/hotelId', () => {
     });
     it('should respond with status 404 when there is no hotel', async () => {
       const hotel = await createHotel();
-      await deleteHotel(hotel.id);
       const user = await createUser();
       const token = await generateValidToken(user);
-      await createEnrollmentWithAddress(user);
+      const enrollment = await createEnrollmentWithAddress(user);
+      const ticketType = await createCustomTicketType(false, true);
+      await createTicket(enrollment.id, ticketType.id, 'PAID');
+      await cleanHotelsAndRoomsFromDb();
 
       const response = await server.get(`/hotels/${hotel.id}`).set('Authorization', `Bearer ${token}`);
       expect(response.status).toBe(httpStatus.NOT_FOUND);

@@ -18,6 +18,11 @@ export async function cleanDb() {
   await prisma.hotel.deleteMany({});
 }
 
+export async function cleanHotelsAndRoomsFromDb() {
+  await prisma.room.deleteMany({});
+  await prisma.hotel.deleteMany({});
+}
+
 export async function generateValidToken(user?: User) {
   const incomingUser = user || (await createUser());
   const token = jwt.sign({ userId: incomingUser.id }, process.env.JWT_SECRET);
